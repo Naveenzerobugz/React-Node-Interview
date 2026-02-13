@@ -98,10 +98,10 @@ console.log(removedDuplicate);
 // Explanation: Adding custom method to String.prototype so any string can call .removeDuplicate()
 // Note: Without implementation below, s.removeDuplicate() will throw TypeError
 String.prototype.removeDuplicate = function () {
-  return [...new Set(this.split(""))].join("");
+  return [...new Set(this.split(" "))].join(" ");
 };
 s.removeDuplicate(); // in prototype
-// Answer: Returns unique chars only. Implemented above to avoid error.
+// Answer: Returns unique words only. Implemented above to avoid error.
 
 // ========== TASK 7: this keyword - regular function vs arrow function ==========
 // Explanation: getFirstName() is regular function - this = user object. getLastName() is arrow function -

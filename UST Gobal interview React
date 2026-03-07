@@ -1,0 +1,177 @@
+//interview task
+/*
+The task is when i click the Cbutton it need to increment the counter by 1 and display the counter value.
+the counter value need to show and the Cbutton never rerender on every click
+*/
+
+//index.js
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import CButton from './CButton';
+import './style.css';
+
+function Counter() {
+  let counter = 0;
+
+  function increment() {
+  }
+  return (
+    <div>
+      <p>{counter}</p>
+      <CButton onClick={increment} />
+    </div>
+  );
+}
+
+const el = <Counter />;
+ReactDOM.render(el, document.getElementById('root'));
+
+
+
+//CButton.js
+import React, { useState } from 'react';
+import ReactDOM from 'react-dom';
+import './style.css';
+
+function CButton(props) {
+  return (
+    <div>
+      {console.log('CButton rerender')}
+      <button {...props}>Increment</button>
+    </div>
+  );
+}
+
+export default CButton;
+
+
+//Interview Result (Task Completed)
+
+//index.js
+import React, { useState, useCallback } from 'react';
+import ReactDOM from 'react-dom';
+import CButton from './CButton';
+import './style.css';
+
+function Counter() {
+  // useState: keeps counter in React state so UI updates when it changes.
+  // Without state, re-render would reset the value; state persists across re-renders.
+  const [counter, setCounter] = useState(0);
+
+  // useCallback: returns the SAME function reference on every render (empty deps []).
+  // Why: CButton is wrapped in React.memo; if we passed a new function each time,
+  // props would "change" and CButton would re-render. Stable reference = no re-render.
+  const increment = useCallback(() => {
+    // Functional updater (pre) => pre + 1: always uses latest state.
+    // Why: avoids stale closure; safe even if increment were used in async code.
+    setCounter((pre) => {
+      return pre + 1;
+    });
+  }, []);
+  return (
+    <div>
+      <p>{counter}</p>
+      <CButton onClick={increment} />
+    </div>
+  );
+}
+
+const el = <Counter />;
+ReactDOM.render(el, document.getElementById('root'));
+
+
+//Cbutton.js
+import React from 'react';
+import ReactDOM from 'react-dom';
+import './style.css';
+
+// React.memo: re-renders this component ONLY when props change (shallow compare).
+// Why: parent Counter re-renders on every click (state changed); without memo,
+// CButton would re-render too. With memo + stable onClick (useCallback), props
+// stay same → CButton skips re-render → "CButton rerender" won't log on click.
+const CButton = React.memo((props) => {
+  return (
+    <div>
+      {console.log('CButton rerender')}
+      <button {...props}>Increment</button>
+    </div>
+  );
+});
+export default CButton;
+
+
+/* =============================================================================
+   STUDY NOTES - For Future Reference
+   =============================================================================
+
+   TASK REQUIREMENTS:
+   1. Click CButton → counter increments by 1
+   2. Display the counter value on screen
+   3. CButton must NEVER re-render on every click (console.log should not fire)
+
+   WHY THE ORIGINAL CODE FAILED:
+   - let counter = 0: recreated every render, increment() did nothing → UI never updated
+   - New increment function each render → CButton gets new prop reference every time
+   - No React.memo on CButton → re-renders whenever parent Counter re-renders
+
+   SOLUTION (Interview Result):
+
+   1. useState(0)
+      - Keeps counter in React state so it updates and UI reflects the value.
+
+   2. setCounter((pre) => pre + 1)
+      - Functional updater: always uses latest state, avoids stale closure issues.
+
+   3. useCallback(() => { setCounter((pre) => pre + 1); }, [])
+      - Returns the SAME increment function on every render (empty deps = no change).
+      - So the onClick prop passed to CButton has a stable reference.
+
+   4. React.memo(CButton)
+      - Re-renders CButton ONLY when its props change (shallow compare).
+      - Since increment is stable, props don't change → CButton skips re-render on click.
+
+   KEY TAKEAWAY:
+   Stable callback (useCallback) + memoized child (React.memo) = counter works
+   and CButton does not re-render on every click.
+
+   ============================================================================= */
+
+
+/* =============================================================================
+   SINGLE PAGE APPLICATION (SPA) - What, How & Why
+   =============================================================================
+
+   WHAT IS A SINGLE PAGE APPLICATION (SPA)?
+   - An app that loads ONE HTML page once (e.g. index.html).
+   - After that, navigation and content changes happen inside the browser without
+     loading a new full page from the server.
+   - Only the needed parts of the page update (e.g. via React updating the DOM).
+   - React, Vue, Angular apps are typically SPAs.
+
+   HOW DOES IT WORK?
+   1. First load: Browser requests the app URL → server sends one HTML file
+      (often with a single <div id="root"></div>). JS bundles (e.g. React app)
+      load and run.
+   2. React (or similar) "mounts" the app into that root div — this is what
+      ReactDOM.render(el, document.getElementById('root')) does in this file.
+   3. When user clicks a link or does an action:
+      - In traditional sites: browser would request a NEW full HTML page.
+      - In SPA: JavaScript (e.g. React Router) changes what component is
+        rendered and updates only the DOM. No full page reload; same HTML
+        document stays, only its content (inside root) changes.
+   4. Data: SPAs often talk to APIs (fetch/axios) and update the UI with the
+      response, still without leaving the single page.
+
+   WHY USE SPA?
+   - Smoother UX: No full page reloads; feels like a native app.
+   - Faster after first load: Only data/HTML fragments may be fetched, not
+     entire pages.
+   - Clear separation: Backend can be a pure API; frontend (React) handles
+     all UI and routing in one app.
+   - Rich interactivity: Easy to build dynamic UIs (like this counter) that
+     update in place.
+
+   TRADEOFF: First load can be heavier (big JS bundle). SEO needs care (e.g.
+   server-side rendering / SSR) if the app must be crawlable.
+
+   ============================================================================= */

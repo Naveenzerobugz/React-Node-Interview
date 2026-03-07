@@ -28,10 +28,10 @@ Promise.resolve(1)
   .then((x) => (x = 10))
   .then((x) => {
     throw new Error("Error");
-  })
-  .then((x) => console.log("success", x))
-  .catch((e) => console.log("error", e.message))
-  .then((x) => console.log("finally", x));
+  }) // throw Error
+  .then((x) => console.log("success", x)) // success 10
+  .catch((e) => console.log("error", e.message)) // error Error
+  .then((x) => console.log("finally", x)); // finally undefined
 // Answer: Output is "error Error" then "finally undefined"
 
 // ========== TASK 3: Promise chain with error ==========

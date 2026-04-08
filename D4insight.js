@@ -82,3 +82,41 @@ setInterval(() => {
   console.log(num);
   if (num === 10) num = 0;
 }, 100);
+
+// 2nd round interview
+// task 1Remove duplicate "AabbccDde"
+
+const str = "AabbccDde";
+
+// console.log([...new Set(str.split(''))].join('')); intervier asked to dont use this Setmethod
+
+const removeDublicate = str
+  .toLowerCase()
+  .split("")
+  .filter((val, i, arr) => arr.indexOf(val) === i)
+  .join("");
+
+console.log(removeDublicate);
+
+// task 2First repeating letter: "abcdafc"
+
+const str1 = "abcdafc".split("");
+console.log(str1);
+const countLetter = [];
+function findFirstLetter() {
+  for (i = 0; i < str1.length; i++) {
+    if (countLetter.includes(str1[i])) {
+      return str1[i];
+    } else {
+      countLetter.push(str1[i]);
+      console.log(countLetter);
+    }
+  }
+}
+
+console.log(findFirstLetter());
+// a
+// b
+// c
+// d
+// a

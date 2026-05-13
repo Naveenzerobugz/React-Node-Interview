@@ -1,0 +1,106 @@
+useEffect(() => {
+
+  const subscription = dataSource.subscribe();
+
+  // Missing cleanup
+
+}, [dataSource]);
+ 
+Create a component with an input field and a button. When the button is clicked, the input field should gain focus.
+ 
+useEffect(() => {
+
+  const subscription = dataSource.subscribe();
+
+  // Missing cleanup
+
+  return subscription;
+
+}, [dataSource]);
+ 
+Create a component with an input field and a button. When the button is clicked, the input field should gain focus.
+ 
+ 
+function User(){
+
+const nameRef = useRef();
+
+const handleFocus = () => {
+
+nameRef.current.focus();
+
+}
+
+return 
+<>
+<input ref={nameRef} name='Name' id='name' />
+<button onClick={handleFocus}></button>
+</>
+
+}
+ 
+Write a custom hook that syncs a state variable with localStorage.
+ 
+Fetch a list of "Posts" (or "Policies") from a mock API (like JSONPlaceholder) and handle the loading state
+ 
+Write a custom hook that syncs a state variable with localStorage.
+
+const useUser = (variableName) => {
+
+const data =  localStorage.getItem(variableName)
+
+return {data}
+
+}
+
+const UserComponent = () {
+
+const { data } = useUser('userDetails');
+
+console.log(data)
+
+}
+ 
+Fetch a list of "Posts" (or "Policies") from a mock API (like JSONPlaceholder) and handle the loading state
+ 
+ 
+const Posts = () => {
+ 
+const [posts, setPosts] = useState({});
+
+const [isLoading, setLoading] = useState(false);
+ 
+useEffect(()=>{
+ 
+fetchPosts();
+ 
+}, [])
+ 
+function async fetchPosts() {
+ 
+setLoading(true)
+
+const {error, data} = await post.list('posts')
+
+if(error) {
+
+setLoading(false);
+
+console.log(error)
+
+}
+
+setPosts(data)
+
+}
+ 
+return 
+<>
+
+{isLoading && <>Loading</>}
+
+{!isLoading && posts && () }
+</>
+ 
+}
+ 
